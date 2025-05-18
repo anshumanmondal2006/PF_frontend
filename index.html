@@ -882,36 +882,7 @@
                   
                     <p>© 2025 Anshuman Mondal – @IITG</p>
                 </footer>
-                 <p>Unique Visitors Count: <span id="visitor-count">Loading...</span></p>
-
-<script>
-  // Check if visitor cookie exists
-  if (!document.cookie.includes('visited=true')) {
-    fetch('https://portfolio-sserver.onrender.com//api/visit', { method: 'POST' })
-      .then(() => {
-        document.cookie = "visited=true; max-age=" + 60*60*24*365; // 1 year
-        return fetch('https://portfolio-sserver.onrender.com/api/visitor-count');
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('visitor-count').textContent = data.uniqueVisitors;
-      })
-      .catch(() => {
-        document.getElementById('visitor-count').textContent = "Error";
-      });
-  } else {
-    // Already visited, just fetch count
-    fetch('https://portfolio-sserver.onrender.com/api/visitor-count')
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('visitor-count').textContent = data.uniqueVisitors;
-      })
-      .catch(() => {
-        document.getElementById('visitor-count').textContent = "Error";
-      });
-  }
-</script>
-            </section>
+                             </section>
 
 
     </main>
