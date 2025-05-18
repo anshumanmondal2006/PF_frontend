@@ -881,6 +881,9 @@
                     </div>
                     <p style="color: red; font-weight: bold">Unique Visitors Count: <span id="visitor-count">Loading...</span></p>
 <script>
+    fetch('https://your-server.onrender.com/unique-visits', {
+    method: 'POST'
+  });
   fetch('https://portfolio-sserver.onrender.com/unique-visits') // replace with actual Render URL
     .then(res => res.json())
     .then(data => {
