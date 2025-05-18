@@ -1,0 +1,181 @@
+styles.css html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+#network-canvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.5;
+}
+
+#coffee-cup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 36px;
+    cursor: pointer;
+    user-select: none;
+    color: #ea580c;
+    /* orange */
+}
+
+#coffee-tooltip {
+    position: fixed;
+    padding: 6px 12px;
+    background: rgba(234, 88, 12, 0.85);
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+/* Typewriter effect */
+@keyframes typing {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        border-color: transparent;
+    }
+
+    50% {
+        border-color: white;
+    }
+}
+
+.typewriter {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid white;
+    width: 0;
+    animation: typing 3s steps(40, end) forwards, blink 1s step-end infinite;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #0b0c10;
+    /* Dark for glow contrast */
+}
+
+#brain-canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+
+#neuron-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+}
+
+#home {
+    position: relative;
+    overflow: visible;
+    z-index: 10;
+}
+
+@keyframes typing {
+    0% {
+        width: 0;
+    }
+
+    50% {
+        width: 100%;
+    }
+
+    100% {
+        width: 0;
+    }
+}
+
+@keyframes blink {
+    50% {
+        border-color: transparent;
+    }
+}
+
+.typewriter {
+    display: inline-block;
+    width: 0;
+    overflow: hidden;
+    border-right: 2px solid white;
+    white-space: nowrap;
+    animation: typing 4s steps(30, end) infinite, blink 0.7s step-end infinite;
+}
+
+/* Coffee Game Styles */
+#coffee-game-modal {
+    backdrop-filter: blur(5px);
+}
+
+.step {
+    transition: all 0.3s ease;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Coffee Game Styles */
+#coffee-game-modal {
+    backdrop-filter: blur(5px);
+}
+
+.step {
+    transition: all 0.3s ease;
+}
+
+.hidden {
+    display: none;
+}
+
+#coffee-game-modal .step button {
+    transition: all 0.2s ease;
+}
+
+#coffee-game-modal .step button:hover {
+    transform: scale(1.05);
+}
+
+#coffee-game-modal .step button:active {
+    transform: scale(0.95);
+}

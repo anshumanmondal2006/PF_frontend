@@ -1,0 +1,1195 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>
+        Anshuman-IITG
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-..." crossorigin="anonymous" />
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .flip-card {
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .flip-card:hover .flip-card-inner,
+        .flip-card:focus-within .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+            backface-visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 0.5rem;
+        }
+
+        .flip-card-front {
+            z-index: 2;
+            transform: rotateY(0deg);
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+            background-color: #1f2937;
+            /* Tailwind slate-800 */
+            padding: 1rem;
+            box-sizing: border-box;
+            color: white;
+        }
+
+        .section-title-gradient {
+            background: linear-gradient(90deg, white 70%, #ea580c 30%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        /* Neuron animation styles */
+        #neuron-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        #home {
+            position: relative;
+            overflow: visible;
+            z-index: 10;
+        }
+
+        /* Floating coffee cup animation */
+        #coffee-cup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            z-index: 60;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 4px #ea580c);
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Tooltip styling */
+        .tooltip {
+            position: absolute;
+            background-color: #ea580c;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+            max-width: 280px;
+            text-align: center;
+        }
+
+        /* Adjust Other Interests cards width on desktop and equal size */
+        @media (min-width: 768px) {
+            #interests>div.space-y-12 {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 2rem;
+            }
+
+            #interests>div.space-y-12>article,
+            #interests>div.space-y-12>div.bg-gray-900 {
+                flex: 1 1 45%;
+                max-width: 45%;
+                margin-bottom: 0 !important;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                height: 280px;
+                /* fixed height for equal height */
+            }
+
+            #interests>div.space-y-12>article>img {
+                max-width: 160px;
+                width: 160px;
+                height: 150px;
+                object-fit: cover;
+                flex-shrink: 0;
+                border-radius: 0.375rem;
+                margin-right: 1.5rem;
+                margin-bottom: 0;
+            }
+
+            #interests>div.space-y-12>article>div {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            #interests>div.space-y-12>div.bg-gray-900 {
+                height: 280px;
+                padding-top: 2rem;
+                padding-bottom: 2rem;
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        /* Mobile adjustments for interests */
+        @media (max-width: 767px) {
+
+            #interests>div.space-y-12>article,
+            #interests>div.space-y-12>div.bg-gray-900 {
+                height: auto;
+                max-width: 100%;
+                flex-direction: column;
+            }
+
+            #interests>div.space-y-12>article>img {
+                width: 100%;
+                height: 150px;
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Light mode overrides */
+        body.light {
+            background-color: #f9fafb;
+            /* Tailwind gray-50 */
+            color: #1f2937;
+            /* Tailwind slate-800 */
+        }
+
+        body.light nav {
+            background-color: #f9fafb;
+            border-color: #ea580c;
+        }
+
+        body.light nav a,
+        body.light nav button {
+            color: #ea580c;
+        }
+
+        body.light nav a:hover {
+            color: #c2410c;
+        }
+
+        body.light .bg-gray-900 {
+            background-color: #f3f4f6;
+            /* Tailwind gray-100 */
+            color: #1f2937;
+            border-color: #ea580c;
+            box-shadow: 0 4px 6px -1px rgb(234 88 12 / 0.4), 0 2px 4px -2px rgb(234 88 12 / 0.1);
+        }
+
+        body.light .text-white {
+            color: #1f2937;
+        }
+
+        body.light .text-gray-300 {
+            color: #4b5563;
+            /* Tailwind gray-600 */
+        }
+
+        body.light .text-gray-400 {
+            color: #6b7280;
+            /* Tailwind gray-500 */
+        }
+
+        body.light .section-title-gradient {
+            background: linear-gradient(90deg, #1f2937 70%, #ea580c 30%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        body.light .flip-card-back {
+            background-color: #e0e7ff;
+            /* Tailwind indigo-100 */
+            color: #1f2937;
+        }
+
+        body.light #coffee-cup {
+            filter: drop-shadow(0 0 4px #c2410c);
+        }
+
+        body.light .tooltip {
+            background-color: #ea580c;
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="bg-black text-white scroll-smooth relative">
+
+    <nav class="fixed w-full bg-black bg-opacity-90 z-50 border-b border-orange-600">
+
+        <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+            <a class="text-2xl font-bold text-violet-600 tracking-wide" href="#home">
+                @Mondal :D
+            </a>
+            <ul class="hidden md:flex space-x-8 text-white font-semibold">
+                <li>
+                    <a class="bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-white 
+                                               font-semibold px-5 py-2 rounded-lg shadow-md 
+                                               hover:bg-slate-300 dark:hover:bg-slate-700 
+                                               hover:scale-105 transition-all duration-300" href="#home">
+                        Home
+                    </a>
+                </li>
+
+                <li>
+                    <a class="bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-white 
+                                               font-semibold px-5 py-2 rounded-lg shadow-md 
+                                               hover:bg-slate-300 dark:hover:bg-slate-700 
+                                               hover:scale-105 transition-all duration-300" href="#education">
+                        Education
+                    </a>
+                </li>
+                <li>
+                    <a class="bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-white 
+                                                               font-semibold px-5 py-2 rounded-lg shadow-md 
+                                                               hover:bg-slate-300 dark:hover:bg-slate-700 
+                                                               hover:scale-105 transition-all duration-300"
+                        href="#experience">
+                        Experience
+                    </a>
+                </li>
+                <li>
+                    <a class="bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-white 
+                                               font-semibold px-5 py-2 rounded-lg shadow-md 
+                                               hover:bg-slate-300 dark:hover:bg-slate-700 
+                                               hover:scale-105 transition-all duration-300" href="#projects">
+                        Projects
+                    </a>
+                </li>
+                <li>
+                    <a class="bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-white 
+                                               font-semibold px-5 py-2 rounded-lg shadow-md 
+                                               hover:bg-slate-300 dark:hover:bg-slate-700 
+                                               hover:scale-105 transition-all duration-300" href="#skills-interests">
+                        Skills
+                    </a>
+                </li>
+                <li>
+                    <a class="bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-white 
+                                               font-semibold px-5 py-2 rounded-lg shadow-md 
+                                               hover:bg-slate-300 dark:hover:bg-slate-700 
+                                               hover:scale-105 transition-all duration-300" href="#contact">
+                        Contact
+                    </a>
+                </li>
+
+
+            </ul>
+            <div class="flex items-center space-x-4">
+                <button aria-label="Toggle light/dark mode"
+                    class="text-orange-600 hover:text-orange-700 focus:outline-none" id="theme-toggle"
+                    title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun fa-lg" id="theme-icon"></i>
+                </button>
+                <button aria-label="Toggle menu" class="md:hidden text-orange-600 focus:outline-none" id="menu-btn">
+                    <i class="fas fa-bars fa-lg">
+                    </i>
+                </button>
+            </div>
+        </div>
+        <div class="hidden md:hidden bg-black border-t border-orange-600" id="mobile-menu">
+            <ul class="flex flex-col space-y-4 px-6 py-4 text-white font-semibold">
+                <li>
+                    <a class="hover:text-orange-600 transition block" href="#home">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a class="hover:text-orange-600 transition block" href="#experience">
+                        Experience
+                    </a>
+                </li>
+                <li>
+                    <a class="hover:text-orange-600 transition block" href="#education">
+                        Education
+                    </a>
+                </li>
+                <li>
+                    <a class="hover:text-orange-600 transition block" href="#projects">
+                        Projects
+                    </a>
+                </li>
+                <li>
+                    <a class="hover:text-orange-600 transition block" href="#skills-interests">
+                        Research &amp; Skills
+                    </a>
+                </li>
+                <li>
+                    <a class="hover:text-orange-600 transition block" href="#interests">
+                        Interests
+                    </a>
+                </li>
+                <li>
+                    <a class="hover:text-orange-600 transition block" href="#contact">
+                        Contact
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <script>
+        let lastScrollY = window.scrollY;
+        const navbar = document.getElementById('navbar');
+
+        // Detect mouse near top on desktop to show navbar
+        window.addEventListener('mousemove', (e) => {
+            if (e.clientY < 50) {
+                navbar.style.transform = 'translateY(0)';
+            }
+        });
+
+        // For mobile: detect touchstart near top to show navbar
+        window.addEventListener('touchstart', (e) => {
+            if (e.touches[0].clientY < 50) {
+                navbar.style.transform = 'translateY(0)';
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY < lastScrollY) {
+                // Scrolling up - show navbar
+                navbar.style.transform = 'translateY(0)';
+            } else {
+                // Scrolling down - hide navbar
+                navbar.style.transform = 'translateY(-100%)';
+            }
+            lastScrollY = window.scrollY;
+        });
+    </script>
+    <main class="pt-20 max-w-7xl mx-auto px-6 space-y-24 relative">
+        <!-- Home -->
+        <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative" id="home">
+            <canvas id="neuron-canvas">
+            </canvas>
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 relative z-20">
+                Hey! I'm
+                <span class="text-green-600">
+                    Anshuman Mondal
+                </span>
+            </h1>
+            <p class="max-w-3xl text-lg md:text-xl leading-relaxed relative z-20" id="intro-text">
+                Currently pursuing B.Tech in
+                <span class="font-bold text-orange-600">
+                    Electronics and Communication Engineering
+                </span>
+                at
+                <a href="https://www.iitg.ac.in" target="_blank" rel="noopener noreferrer"
+                    class="font-bold text-orange-600 hover:underline">
+                    IIT Guwahati
+                </a>
+
+
+            <p class="typewriter">Welcome to my personal site..!</p>
+            </p><a href="https://www.linkedin.com/in/anshuman-mondal-145314280" target="_blank"
+                rel="noopener noreferrer">
+                <img src="podiumiitg.jpeg"
+                    alt="Portrait photo of a young professional with confident smile wearing smart casual clothes, medium skin tone, short black hair, and glasses, with a blurred office background"
+                    class="rounded-full mt-10 w-48 h-48 object-cover shadow-lg border-4 border-orange-600 relative z-20"
+                    width="400" height="400" loading="lazy" />
+            </a>
+            <div
+                class="mt-4 bg-gray-900 text-orange-400 border border-orange-600 rounded-lg px-4 py-2 inline-block text-sm shadow">
+                JEE Advanced AIR 1597 (2023)
+            </div>
+
+            <!-- Add this right after your profile image in the home section -->
+            <div class="mt-6 relative z-20">
+                <button
+                    class="bg-purple-600 hover:bg-purple-900 text-black font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                    <i class="fas fa-download mr-2"></i> Download CV (Coming Soon)
+                </button>
+                <div class="absolute -bottom-6 left-0 right-0 text-center text-sm text-gray-400">
+                    Working on it!
+                </div>
+            </div>
+        </section>
+
+        <!-- Education (Timeline Style) -->
+        <section class="text-white py-16" id="education">
+            <canvas id="education-bg" class="absolute inset-0 w-full h-full z-0"></canvas>
+
+            <div class="absolute inset-0 bg-black bg-opacity-5"></div>
+
+            <div class="relative z-50">
+                <!-- your timeline content here -->
+            </div>
+            <!-- Education Section -->
+            <section id="education" class="relative py-16 px-4 text-white overflow-hidden bg-cover bg-center"
+                style="background-image: url('top.png');">
+                <!-- Vertical center line -->
+
+                <!-- Section Title with Typewriter Effect -->
+                <h2 class="text-4xl mb-12 text-center">
+                    <style>
+                        @keyframes typing {
+                            0% {
+                                width: 0ch;
+                            }
+
+                            50% {
+                                width: 22ch;
+                            }
+
+                            /* Adjust 22ch to length of your text */
+                            100% {
+                                width: 0ch;
+                            }
+                        }
+
+                        @keyframes blink {
+                            50% {
+                                border-color: transparent;
+                            }
+                        }
+
+                        .typewriter {
+                            display: inline-block;
+                            max-width: fit-content;
+                            overflow: hidden;
+                            border-right: 2px solid white;
+                            white-space: nowrap;
+                            animation: typing 4s steps(30, end) infinite, blink 0.7s step-end infinite;
+                        }
+                    </style>
+                    <span class="typewriter section-title-gradient">My Education...</span>
+                </h2>
+
+                <div class="relative max-w-5xl mx-auto space-y-3">
+
+                    <!-- Timeline Item 1 -->
+                    <div class="flex flex-col md:flex-row justify-center items-center w-full relative">
+                        <!-- Left (desktop) -->
+                        <div class="w-full md:w-1/2 md:pr-8 hidden md:block text-right">
+                            <div class="bg-gray-900 p-4 rounded-lg shadow border border-orange-600">
+                                <h3 class="text-2xl font-bold">Secondary</h3>
+                                <p class="italic text-gray-400">The Hyderabad Public School, Ramanthapur</p>
+                                <p>Secured 98.8%</p>
+                                <p class="text-gray-400 mt-1">CBSE (Central Board of Secondary Education)</p>
+                            </div>
+                        </div>
+                        <!-- Dot -->
+                        <div
+                            class="w-20 h-20 z-20 border-4 border-white bg-white rounded-full mx-4 flex items-center justify-center shadow-lg my-6 md:my-0">
+                            <img src="hpsr.png" alt="Institution Logo" class="w-full h-full object-contain p-2">
+                        </div>
+                        <!-- Right (mobile) -->
+                        <div class="w-full md:w-1/2 md:pl-8 md:hidden">
+                            <div class="bg-gray-900 p-4 rounded-lg shadow border border-orange-600 text-center">
+                                <h3 class="text-2xl font-bold">Secondary</h3>
+                                <p class="italic text-gray-400">The Hyderabad Public School, Ramanthapur</p>
+                                <p>Secured 98.8%</p>
+                                <p class="text-gray-400 mt-1">CBSE (Central Board of Secondary Education)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Animated Downward Arrow -->
+                    <div class="flex justify-center">
+                        <svg class="w-10 h-10 animate-bounce arrow-gradient" fill="none" viewBox="0 0 24 24"
+                            stroke-width="3" stroke="url(#gradient)">
+                            <defs>
+                                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#f59e0b" /> <!-- Orange -->
+                                    <stop offset="50%" stop-color="#10b981" /> <!-- Green -->
+                                    <stop offset="100%" stop-color="#3b82f6" /> <!-- Blue -->
+                                </linearGradient>
+                            </defs>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+
+
+
+                    <!-- Timeline Item 2 -->
+                    <div class="flex flex-col md:flex-row justify-center items-center w-full relative">
+                        <div class="w-full md:w-1/2 md:pl-8 hidden md:block text-left">
+                            <div class="bg-gray-900 p-4 rounded-lg shadow border border-orange-600">
+                                <h3 class="text-2xl font-bold">Senior Secondary</h3>
+                                <p class="italic text-gray-400">Sri Chaitanya College of Education</p>
+                                <p>Secured 98.4%</p>
+                                <p class="text-gray-400 mt-1">TSBIE (Telangana State Board of Intermediate Education)
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Dot -->
+                        <div
+                            class="w-20 h-20 z-20 border-4 border-white bg-white rounded-full mx-4 flex items-center justify-center shadow-lg my-6 md:my-0">
+                            <img src="srichaitanya.png" alt="Institution Logo" class="w-full h-full object-contain p-2">
+                        </div>
+                        <div class="w-full md:w-1/2 md:pr-8 md:hidden">
+                            <div class="bg-gray-900 p-4 rounded-lg shadow border border-orange-600 text-center">
+                                <h3 class="text-2xl font-bold">Senior Secondary</h3>
+                                <p class="italic text-gray-400">Sri Chaitanya College of Education</p>
+                                <p>Secured 98.4%</p>
+                                <p class="text-gray-400 mt-1">TSBIE (Telangana State Board of Intermediate Education)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Animated Downward Arrow -->
+                    <div class="flex justify-center">
+                        <svg class="w-10 h-10 animate-bounce arrow-gradient" fill="none" viewBox="0 0 24 24"
+                            stroke-width="3" stroke="url(#gradient)">
+                            <defs>
+                                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#f59e0b" /> <!-- Orange -->
+                                    <stop offset="50%" stop-color="#10b981" /> <!-- Green -->
+                                    <stop offset="100%" stop-color="#3b82f6" /> <!-- Blue -->
+                                </linearGradient>
+                            </defs>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+
+
+                    <!-- Timeline Item 3 -->
+                    <div class="flex flex-col md:flex-row justify-center items-center w-full relative">
+                        <!-- Left (desktop) -->
+                        <div class="w-full md:w-1/2 md:pr-8 hidden md:block text-right">
+                            <div class="bg-gray-900 p-4 rounded-lg shadow border border-orange-600">
+                                <h3 class="text-2xl font-bold">Undergraduate</h3>
+                                <p class="italic text-gray-400">Indian Institute of Technology (IIT Guwahati)</p>
+                                <p>B.Tech in Electronics and Communication Engineering (ECE)</p>
+                                <p class="text-gray-400 mt-1">Year: 2023 - Present</p>
+                            </div>
+                        </div>
+                        <!-- Dot -->
+                        <div
+                            class="w-20 h-20 z-20 border-4 border-white bg-white rounded-full mx-4 flex items-center justify-center shadow-lg my-6 md:my-0">
+                            <img src="iitg.png" alt="Institution Logo" class="w-full h-full object-contain p-2">
+                        </div>
+                        <!-- Right (mobile) -->
+                        <div class="w-full md:w-1/2 md:pl-8 md:hidden">
+                            <div class="bg-gray-900 p-4 rounded-lg shadow border border-orange-600 text-center">
+                                <h3 class="text-2xl font-bold">Undergraduate</h3>
+                                <p class="italic text-gray-400">Indian Institute of Technology (IIT Guwahati)</p>
+                                <p>B.Tech in Electronics and Communication Engineering (ECE)</p>
+                                <p class="text-gray-400 mt-1">Year: 2023 - Present</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+            <!-- Experience -->
+            <section class="text-white" id="experience">
+                <h2 class="text-4xl mb-12 text-center section-title-gradient">
+                    Experience
+                </h2>
+                <div class="space-y-10 max-w-4xl mx-auto">
+                    <article class="bg-gray-900 rounded-lg p-6 shadow-lg border border-green-600">
+                        <h3 class="text-2xl font-bold text-white">
+                            Remote Research Intern, Signal Processing
+                        </h3>
+                        <p class="italic text-gray-400 mb-2">
+                            2025 (Ongoing)
+                        </p>
+                        <p class="mb-2">
+                            <span class="font-bold text-blue-600">
+                                Under Prof. Anowarul Habib
+                            </span><br>
+                            At the Acoustic Sensing and Imaging Lab, The Arctic University of Norway(UiT)
+                        </p>
+                        <!-- <p class="text-gray-400">
+                            Duration: April 2025 - Present
+                        </p> -->
+                    </article>
+                </div>
+            </section>
+
+            <!-- Project: Passive Circuit Simulator -->
+            <section class="text-white max-w-5xl mx-auto my-16" id="projects">
+                <h2 class="text-4xl mb-12 text-center section-title-gradient">Projects(To be updated soon!)</h2>
+                <div class="flex justify-center">
+                    <div class="flip-card bg-gray-900 border border-orange-600 rounded-lg shadow-lg h-72 w-80 cursor-pointer focus:outline-none"
+                        tabindex="0">
+                        <div class="flip-card-inner h-full p-6 flex flex-col justify-center items-center text-center">
+                            <!-- Front -->
+                            <div class="flip-card-front flex flex-col justify-center items-center h-full">
+                                <img alt="" class="mb-4 rounded-md shadow-md" src="EE204.png" width="150" height="150"
+                                    loading="lazy" />
+                                <h3 class="text-xl font-bold text-orange-600">
+                                    Passive Circuit Simulator<br>(EE204 Project)
+                                </h3>
+                            </div>
+                            <!-- Back -->
+                            <div
+                                class="flip-card-back flex flex-col justify-center items-center h-full text-center px-2">
+                                <p>
+                                    Simulates branch voltages and currents over time for circuits with resistors,
+                                    capacitors,
+                                    inductors,
+                                    and independent voltage/current sources.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills -->
+            <section class="text-white max-w-5xl mx-auto" id="skills-interests">
+                <h2 class="text-4xl mb-12 text-center section-title-gradient">Skills</h2>
+                <div class="flex justify-center">
+                    <div
+                        class="bg-gray-900 rounded-lg p-6 border border-green-600 shadow-lg w-full max-w-2xl text-center">
+                        <h3 class="text-2xl font-bold mb-6 text-green-600">Technical Skills</h3>
+                        <ul class="space-y-3 text-gray-300 text-lg">
+                            <li><span class="font-bold text-red-600">Python</span> – NumPy, Pandas, Scikit-learn,
+                                Matplotlib,
+                                OpenCV</li>
+                            <li><span class="font-bold text-red-600">TensorFlow / PyTorch</span> – Deep Learning</li>
+                            <li><span class="font-bold text-red-600">TechStacks</span> – HTML, CSS, JS, Flutter</li>
+                            <li><span class="font-bold text-red-600">Git / GitHub</span> – Version Control</li>
+                            <li><span class="font-bold text-red-600">Softwares</span> – Matlab(elementary) and
+                                LtSpice</li>
+                            <li><span class="font-bold text-red-600">Linux</span> – CLI & Scripting</li>
+                            <li><span class="font-bold text-red-600">AWS</span> – Cloud Services</li>
+                        </ul>
+                    </div>
+
+
+                    <!-- Interests -->
+                    <!-- <div>
+                            <h3 class="text-2xl font-bold mb-4 text-orange-600 text-center">Interests</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-300 text-lg">
+                                <li><span class="font-bold text-orange-600">Cricket</span> – Passionate player &
+                                    follower</li>
+                                <li><span class="font-bold text-orange-600">F1 Racing</span> – Tech + Precision Driving
+                                </li>
+                                <li><span class="font-bold text-orange-600">Geopolitics</span> – Global dynamics & IR
+                                </li>
+                                <li><span class="font-bold text-orange-600">Quote</span> – “Love what you do.” – Steve
+                                    Jobs</li>
+                            </ul>
+                        </div> -->
+                </div>
+
+            </section>
+
+            <!-- Contact -->
+            <section class="text-white max-w-3xl mx-auto scroll-mt-24 pt-16" id="contact">
+
+
+
+                <div class="bg-gray-900 rounded-lg p-8 border border-orange-600 shadow-lg space-y-8 relative z-50">
+                    <!-- Contact Info -->
+                    <!-- <div class="space-y-6">
+                        <div class="flex items-center space-x-4 group">
+                            <i class="fab fa-linkedin fa-2x text-orange-600"></i>
+                            <a class="text-lg font-semibold text-white hover:text-orange-600 transition break-all"
+                                href="https://www.linkedin.com/in/anshuman-mondal-145314280" rel="noopener noreferrer"
+                                target="_blank">
+                                linkedin.com/in/anshuman-mondal-145314280
+                            </a>
+                        </div>
+                        <div class="flex items-center space-x-4 group">
+                            <i class="fas fa-envelope fa-2x text-orange-600"></i>
+                            <a class="text-lg font-semibold text-white hover:text-orange-600 transition break-all"
+                                href="mailto:anshuman.mondal@iitg.ac.in">
+                                anshuman.mondal@iitg.ac.in
+                            </a>
+                        </div>
+                    </div> -->
+
+                    <section class="text-white max-w-3xl mx-auto scroll-mt-24 pt-16 relative z-30" id="contact">
+                        <h2
+                            class="text-4xl mb-10 text-center font-extrabold bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 bg-clip-text text-transparent">
+                            Let's get in touch!
+                        </h2>
+                        <form id="contactForm" class="space-y-6">
+                            <div>
+                                <label for="name"
+                                    class="block text-lg font-semibold mb-1 text-pink-600 dark:text-pink-400">Name</label>
+                                <input type="text" id="name" name="name" required
+                                    class="w-full p-3 rounded 
+                                                                   bg-white dark:bg-gray-800 
+                                                                   text-gray-900 dark:text-gray-100 
+                                                                   placeholder-gray-500 dark:placeholder-gray-400 
+                                                                   border border-gray-300 dark:border-gray-600 
+                                                                   focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none transition" />
+                            </div>
+                            <div>
+                                <label for="email"
+                                    class="block text-lg font-semibold mb-1 text-pink-600 dark:text-pink-400">Email</label>
+                                <input type="email" id="email" name="email" required
+                                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                    title="Please enter a valid email address (e.g., user@example.com)"
+                                    class="w-full p-3 rounded 
+                                                                   bg-white dark:bg-gray-800 
+                                                                   text-gray-900 dark:text-gray-100 
+                                                                   placeholder-gray-500 dark:placeholder-gray-400 
+                                                                   border border-gray-300 dark:border-gray-600 
+                                                                   focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none transition
+                                                                   invalid:border-red-500 invalid:text-red-600
+                                                                   focus:invalid:border-red-500 focus:invalid:ring-red-500" />
+                                <p id="email-error" class="mt-1 text-sm text-red-600 dark:text-red-400 hidden">Please
+                                    enter a valid email
+                                    address.</p>
+                            </div>
+                            <div>
+                                <label for="message"
+                                    class="block text-lg font-semibold mb-1 text-pink-600 dark:text-pink-400">Suggestions
+                                    /
+                                    Message</label>
+                                <textarea id="message" name="message" rows="4" required
+                                    class="w-full p-3 rounded 
+                                                                   bg-white dark:bg-gray-800 
+                                                                   text-gray-900 dark:text-gray-100 
+                                                                   placeholder-gray-500 dark:placeholder-gray-400 
+                                                                   border border-gray-300 dark:border-gray-600 
+                                                                   focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none transition"></textarea>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit"
+                                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded transition
+                                                                   focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                                    Send
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+
+            </section>
+            <script>
+                const form = document.getElementById('contactForm');
+
+                form.addEventListener('submit', async (e) => {
+
+
+                    const name = form.name.value;
+                    const email = form.email.value;
+                    const message = form.message.value;
+
+                    try {
+                        const response = await fetch('https://portfolio-sserver.onrender.com', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ name, email, message })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            alert('Email sent successfully!');
+                            form.reset();
+                        } else {
+                            alert('Failed to send: ' + result.message);
+                        }
+                    } catch (err) {
+                        alert('Error: ' + err.message);
+                    }
+                });
+            </script>
+
+            <section>
+                <footer
+                    class="mt-16 text-center text-gray-600 dark:text-gray-400 text-sm max-w-2xl mx-auto pb-6 space-y-4 relative z-50 pointer-events-auto">
+
+                    <div class="flex justify-center space-x-6 text-xl">
+                        <!-- LinkedIn -->
+                        <a href="https://www.linkedin.com/in/anshuman-mondal-145314280" target="_blank"
+                            rel="noopener noreferrer" class="hover:text-orange-600 transition">
+                            <i class="fab fa-linkedin" style="color: #0077B5;"></i> <!-- LinkedIn -->
+                        </a>
+
+                        <!-- Kaggle -->
+                        <a href="https://www.kaggle.com/anshuman2006iitg" target="_blank" rel="noopener noreferrer"
+                            class="hover:text-orange-600 transition">
+                            <i class="fab fa-kaggle"></i>
+                        </a>
+                        <!-- Twitter -->
+                        <a href="https://x.com/anshuiitg2023" target="_blank" rel="noopener noreferrer"
+                            class="hover:text-orange-600 transition"><i class="fab fa-twitter"
+                                style="color: #1DA1F2;"></i> <!-- Twitter blue -->
+                        </a>
+
+                        <!-- GitHub -->
+                        <a href="https://github.com/anshumanmondal2006" target="_blank" rel="noopener noreferrer"
+                            class="hover:text-gray-800 dark:hover:text-white transition text-2xl">
+                            <i class="fab fa-github" style="color: #181717;"></i> <!-- GitHub black -->
+                        </a>
+
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/profile.php?id=61555995941498" target="_blank"
+                            rel="noopener noreferrer" class="hover:text-orange-600 transition">
+                            <i class="fab fa-facebook" style="color: #1877F2;"></i> <!-- Facebook -->
+                        </a>
+
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/ambmncm_2006/" target="_blank" rel="noopener noreferrer"
+                            class="hover:text-orange-600 transition">
+                            <i class="fab fa-instagram" style="color: #E4405F;"></i> <!-- Instagram -->
+                        </a>
+
+
+
+
+
+                    </div>
+
+                    <p>© 2025 Anshuman Mondal – @IITG</p>
+                </footer>
+            </section>
+
+
+    </main>
+    <!-- 
+    <img alt="Animated floating coffee cup icon" aria-describedby="coffee-tooltip" height="60" id="coffee-cup"
+        src="https://storage.googleapis.com/a1aa/image/b94dd638-50f9-4ed2-dc6c-a135a476f043.jpg" tabindex="0"
+        width="60" />
+    <div class="tooltip" id="coffee-tooltip" role="tooltip">
+        Need a break? Coffee fuels the best code!
+    </div> -->
+
+    <script>
+        (() => {
+            const canvas = document.getElementById('education-bg');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.z = 5;
+
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambient);
+            const directional = new THREE.DirectionalLight(0xffa500, 1);
+            directional.position.set(1, 1, 1).normalize();
+            scene.add(directional);
+
+            const torusMaterial = new THREE.MeshStandardMaterial({ color: 0xff6600, metalness: 0.5, roughness: 0.3 });
+            const tori = [];
+
+            for (let i = 0; i < 4; i++) {
+                const geometry = new THREE.TorusGeometry(0.6, 0.2, 16, 100);
+                const mesh = new THREE.Mesh(geometry, torusMaterial);
+                mesh.position.set(Math.random() * 10 - 5, Math.random() * 6 - 3, Math.random() * -10);
+                mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+                scene.add(mesh);
+                tori.push(mesh);
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                tori.forEach(torus => {
+                    torus.rotation.x += 0.003;
+                    torus.rotation.y += 0.002;
+                });
+                renderer.render(scene, camera);
+            }
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            animate();
+        })();
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Theme toggle logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+
+        // Load saved theme from localStorage or default to dark
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        } else {
+            body.classList.remove('light');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (body.classList.contains('light')) {
+                body.classList.remove('light');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.add('light');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+        (() => {
+            const canvas = document.getElementById('neuron-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({
+                canvas,
+                alpha: true,
+                antialias: true
+            });
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+            const ambientLight = new THREE.AmbientLight(0xb91c1c);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+
+            const brainGeometry = new THREE.SphereGeometry(2.6, 40, 40);
+            const brainMaterial = new THREE.MeshPhongMaterial({
+                color: 0x3b82f6,
+                transparent: true,
+                opacity: 0.85,
+                shininess: 120
+            });
+            const brain = new THREE.Mesh(brainGeometry, brainMaterial);
+            scene.add(brain);
+
+            const detailGeometry = new THREE.SphereGeometry(2.1, 32, 32);
+            const detailMaterial = new THREE.MeshPhongMaterial({
+                color: 0x2563eb,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.4
+            });
+            const brainDetails = new THREE.Mesh(detailGeometry, detailMaterial);
+            scene.add(brainDetails);
+
+            const particles = [];
+            const particleCount = 200;
+            const particleGeometry = new THREE.SphereGeometry(0.03, 8, 8);
+            const particleMaterial = new THREE.MeshBasicMaterial({
+                color: 0x00ffff,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            for (let i = 0; i < particleCount; i++) {
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.random() * Math.PI;
+                const radius = 11.5 * Math.random();
+
+                const x = radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.sin(phi) * Math.sin(theta);
+                const z = radius * Math.cos(phi);
+
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                particle.position.set(x, y, z);
+
+                particle.userData = {
+                    velocity: new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.02,
+                        (Math.random() - 0.5) * 0.02,
+                        (Math.random() - 0.5) * 0.02
+                    ),
+                    originalPosition: new THREE.Vector3(x, y, z),
+                    maxDistance: 0.5 + Math.random() * 0.5
+                };
+
+                scene.add(particle);
+                particles.push(particle);
+            }
+
+            const connections = [];
+            for (let i = 0; i < 50; i++) {
+                const startIndex = Math.floor(Math.random() * particles.length);
+                const endIndex = Math.floor(Math.random() * particles.length);
+                if (startIndex !== endIndex) {
+                    const start = particles[startIndex];
+                    const end = particles[endIndex];
+                    const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+                        start.position,
+                        end.position
+                    ]);
+                    const lineMaterial = new THREE.LineBasicMaterial({
+                        color: 0x3399ff,
+                        transparent: true,
+                        opacity: 0.3
+                    });
+                    const line = new THREE.Line(lineGeometry, lineMaterial);
+                    scene.add(line);
+                    connections.push({
+                        line,
+                        start,
+                        end
+                    });
+                }
+            }
+
+            // Shader material for colorful pulses
+            const pulseMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    time: { value: 0.0 }
+                },
+                vertexShader: `
+            varying vec3 vPosition;
+            void main() {
+                vPosition = position;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+                fragmentShader: `
+            uniform float time;
+            varying vec3 vPosition;
+
+            void main() {
+                float r = 0.5 + 0.5 * sin(time + vPosition.x * 5.0);
+                float g = 0.5 + 0.5 * sin(time + vPosition.y * 5.0 + 2.0);
+                float b = 0.5 + 0.5 * sin(time + vPosition.z * 5.0 + 4.0);
+                gl_FragColor = vec4(r, g, b, 1.0);
+            }
+        `,
+                transparent: true
+            });
+
+            const pulses = [];
+            for (let i = 0; i < 10; i++) {
+                const pulseGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+                const pulse = new THREE.Mesh(pulseGeometry, pulseMaterial.clone());
+                pulse.visible = false;
+                scene.add(pulse);
+                pulses.push(pulse);
+            }
+
+            camera.position.z = 5;
+
+            let pulseTimer = 0;
+            let activePulse = null;
+
+            function animate(time) {
+                requestAnimationFrame(animate);
+
+                brain.rotation.y += 0.002;
+                brain.rotation.x += 0.001;
+                brainDetails.rotation.y += 0.002;
+                brainDetails.rotation.x += 0.001;
+
+                particles.forEach(particle => {
+                    particle.position.add(particle.userData.velocity);
+                    const distance = particle.position.distanceTo(particle.userData.originalPosition);
+                    if (distance > particle.userData.maxDistance) {
+                        particle.userData.velocity.multiplyScalar(-1);
+                    }
+                });
+
+                connections.forEach(conn => {
+                    conn.line.geometry.dispose();
+                    conn.line.geometry = new THREE.BufferGeometry().setFromPoints([
+                        conn.start.position,
+                        conn.end.position
+                    ]);
+                });
+
+                pulseTimer += 0.01;
+                if (pulseTimer > 3 || (activePulse && activePulse.userData.progress < 1)) {
+                    if (!activePulse || activePulse.userData.progress >= 1) {
+                        pulseTimer = 0;
+                        const connection = connections[Math.floor(Math.random() * connections.length)];
+                        activePulse = pulses.find(p => !p.visible);
+
+                        if (activePulse) {
+                            activePulse.visible = true;
+                            activePulse.position.copy(connection.start.position);
+                            activePulse.userData = {
+                                start: connection.start.position.clone(),
+                                end: connection.end.position.clone(),
+                                progress: 0
+                            };
+                        }
+                    } else {
+                        activePulse.userData.progress += 0.02;
+                        activePulse.position.lerpVectors(
+                            activePulse.userData.start,
+                            activePulse.userData.end,
+                            activePulse.userData.progress
+                        );
+                        activePulse.scale.setScalar(1 + activePulse.userData.progress * 2);
+                        activePulse.material.uniforms.time.value += 0.05;
+                        if (activePulse.userData.progress >= 1) {
+                            activePulse.visible = false;
+                            activePulse.scale.setScalar(1);
+                            activePulse.userData.progress = 0;
+                            activePulse = null;
+                        }
+                    }
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            function onResize() {
+                const width = canvas.clientWidth;
+                const height = canvas.clientHeight;
+                renderer.setSize(width, height);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+            }
+
+            window.addEventListener('resize', onResize);
+            animate();
+        })();
+
+
+    </script>
+
+</body>
+
+</html>
